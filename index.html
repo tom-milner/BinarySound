@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <button id="play">Transmit</button>
+
+  <h2 id="freqLabel">Frequency:</h2>
+  <h2 id="max"></h2>
+  <h2 id="freqLabel">Hz</h2>
+  <br />
+  <h3 id="actualBits"></h3>
+  <h2 id="actualData"></h2>
+  <br />
+  <h3 id="bitData"></h3>
+  <h2 id="decoded"></h2>
+
+
+</body>
+<script src="index.js"></script>
+
+</html>
+
+
+<style>
+  #play {
+    margin-bottom: 2rem;
+    display: block;
+    padding: 1rem 2rem;
+    background-color: #ddd;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    outline: none;
+    border: none;
+  }
+
+  #max,
+  #freqLabel {
+    display: inline;
+  }
+
+  h2 {
+    font-family: "Muli";
+    font-weight: 300;
+  }
+
+  h3 {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 300;
+
+  }
+</style>
