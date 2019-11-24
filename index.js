@@ -1,14 +1,15 @@
-const oneFreq = 16000.0;
-const zeroFreq = 15000.0;
-const newBitFreq = 14000.0;
+const oneFreq = 15000.0;
+const zeroFreq = 12000.0;
+const newBitFreq = 10000.0;
 
 const freqBound = 10;
 
 var context = new AudioContext();
-let data = 0;
-const pulseWidth = 10000 / context.sampleRate;
+let data = JSON.stringify({
+  msg: "hello"
+});
+const pulseWidth = 25000 / context.sampleRate;
 const fftSize = 2048;
-let timer;
 let analyserNode, decoderNode;
 console.log(context.sampleRate);
 
@@ -39,9 +40,7 @@ let actualData = document.querySelector("#actualData");
 
 
 document.querySelector("#play").addEventListener("click", function () {
-  if (timer) clearInterval(timer);
   bits.textContent = "";
-  context.resume();
   modulate();
 });
 
@@ -83,7 +82,8 @@ async function modulate() {
   actualBits.textContent = bin;
   actualData.textContent = decodeBits(getBin(data));
 
-  for (let bit of bin.split("")) {
+  let binArr = bin.split("");
+  for (let bit of binArr) {
     var osc = context.createOscillator();
     var sigOsc = context.createOscillator();
     sigOsc.type = "square";
@@ -94,16 +94,17 @@ async function modulate() {
 
     osc.connect(context.destination);
     sigOsc.connect(context.destination);
-    sigOsc.start(context.currentTime)
-    sigOsc.stop(context.currentTime + pulseWidth * 0.9)
+    sigOsc.start(context.currentTime + (pulseWidth * 0.1))
+    sigOsc.stop(context.currentTime + (pulseWidth * 0.25))
     osc.start(context.currentTime);
     osc.stop(context.currentTime + pulseWidth);
+    console.log(context.currentTime);
     await sleep(pulseWidth * 1000);
   }
 }
 
 function startMicrophone(stream) {
-  let processor = context.createScriptProcessor(2048, 1, 1);
+  let processor = context.createScriptProcessor(fftSize, 1, 1);
   let micStream = context.createMediaStreamSource(stream);
   analyserNode = context.createAnalyser();
   analyserNode.smoothingTimeConstant = 0;
@@ -142,7 +143,8 @@ function processAudio() {
   let sigFreqIndex = getFrequencyIndexRange(newBitFreq, freqBound);
   let sigFreqStrength = Math.max(...arr.slice(sigFreqIndex.min, sigFreqIndex.max));
   let normSigStrength = normalize(sigFreqStrength, -120, 0);
-  if (normSigStrength >= 0.4) {
+
+  if (normSigStrength >= 0.5) {
     if (hasBeenRead) return;
     // 1s
     let oneFreqIndex = getFrequencyIndexRange(oneFreq, freqBound);
@@ -154,14 +156,13 @@ function processAudio() {
     let zeroFreqStrength = Math.max(...arr.slice(zeroFreqIndex.min, zeroFreqIndex.max));
     let normZeroStrength = normalize(zeroFreqStrength, -120, 0);
 
-    console.log(normSigStrength)
-    if (normOneStrength >= 0.4) {
+    console.log(normOneStrength, normZeroStrength)
+    if (normOneStrength >= normZeroStrength) {
       appendBit(1);
-      hasBeenRead = true;
-    } else if (normZeroStrength >= 0.4) {
+    } else {
       appendBit(0);
-      hasBeenRead = true;
     }
+    hasBeenRead = true;
   } else {
     // ready to read
     hasBeenRead = false;
