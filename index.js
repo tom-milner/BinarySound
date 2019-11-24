@@ -10,16 +10,21 @@ let data = JSON.stringify({
 });
 const pulseWidth = 6000 / context.sampleRate;
 const fftSize = 2048;
-let analyserNode, decoderNode;
-console.log(context.sampleRate);
+let analyserNode;
+let micStream;
+
+let bits = document.querySelector("#bitData");
+let decoded = document.querySelector("#decoded");
+let actualBits = document.querySelector("#actualBits");
+let actualData = document.querySelector("#actualData");
+
 
 window.onload = async function () {
-
   navigator.getUserMedia({
       audio: true
     },
     function (stream) {
-      startMicrophone(stream);
+      micStream = stream;
     },
     function (err) {
       console.log(err);
@@ -27,18 +32,19 @@ window.onload = async function () {
   );
 }
 
-
-
-let bits = document.querySelector("#bitData");
-let decoded = document.querySelector("#decoded");
-let actualBits = document.querySelector("#actualBits");
-let maxText = document.querySelector("#max");
-let actualData = document.querySelector("#actualData");
-
-
-document.querySelector("#play").addEventListener("click", function () {
+document.querySelector("#rt").addEventListener("click", function () {
   bits.textContent = "";
+  startMicrophone(micStream);
   modulate();
+});
+
+document.querySelector("#transmit").addEventListener("click", function () {
+  modulate();
+});
+
+document.querySelector("#receive").addEventListener("click", function () {
+  startMicrophone(micStream);
+  bits.textContent = "";
 });
 
 function appendBit(bit) {

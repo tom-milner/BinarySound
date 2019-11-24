@@ -12,12 +12,11 @@
 
 <body>
 
-  <button id="play">Transmit</button>
+  <button id="transmit">Transmit</button>
+  <button id="receive">Receive</button>
+  <button id="rt">Receive and Transmit</button>
+  <br>
 
-  <h2 id="freqLabel">Frequency:</h2>
-  <h2 id="max"></h2>
-  <h2 id="freqLabel">Hz</h2>
-  <br />
   <h3 id="actualBits"></h3>
   <h2 id="actualData"></h2>
   <br />
@@ -32,9 +31,9 @@
 
 
 <style>
-  #play {
+  button {
     margin-bottom: 2rem;
-    display: block;
+    display: inline;
     padding: 1rem 2rem;
     background-color: #ddd;
     border-radius: 10px;
@@ -42,6 +41,7 @@
     outline: none;
     border: none;
   }
+
 
   #max,
   #freqLabel {
