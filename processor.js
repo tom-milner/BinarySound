@@ -3,8 +3,17 @@ class DecoderProcessor extends AudioWorkletProcessor {
     super();
   }
 
-  process(inputs, outputs, paramters) {
-    console.log(inputs, outputs, paramters);
+  // Static getter to define AudioParam objects in this custom processor.
+  static get parameterDescriptors() {
+    return [{
+      name: 'myParam',
+      defaultValue: 0.707
+    }];
+  }
+
+
+  process(inputs, outputs, parameters) {
+    console.log(inputs, outputs, parameters);
     return true;
 
 
