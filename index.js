@@ -8,15 +8,12 @@ var context = new AudioContext();
 let data = JSON.stringify({
   msg: "hello"
 });
-const pulseWidth = 25000 / context.sampleRate;
+const pulseWidth = 6000 / context.sampleRate;
 const fftSize = 2048;
 let analyserNode, decoderNode;
 console.log(context.sampleRate);
 
 window.onload = async function () {
-  // await context.audioWorklet.addModule('processor.js')
-  // decoderNode = new AudioWorkletNode(context, "decoder-processor");
-  // console.log(decoderNode);
 
   navigator.getUserMedia({
       audio: true
@@ -94,11 +91,10 @@ async function modulate() {
 
     osc.connect(context.destination);
     sigOsc.connect(context.destination);
-    sigOsc.start(context.currentTime + (pulseWidth * 0.1))
-    sigOsc.stop(context.currentTime + (pulseWidth * 0.25))
+    sigOsc.start(context.currentTime + (pulseWidth * 0.25))
+    sigOsc.stop(context.currentTime + (pulseWidth * 0.5))
     osc.start(context.currentTime);
     osc.stop(context.currentTime + pulseWidth);
-    console.log(context.currentTime);
     await sleep(pulseWidth * 1000);
   }
 }
@@ -142,22 +138,22 @@ function processAudio() {
   // signal
   let sigFreqIndex = getFrequencyIndexRange(newBitFreq, freqBound);
   let sigFreqStrength = Math.max(...arr.slice(sigFreqIndex.min, sigFreqIndex.max));
-  let normSigStrength = normalize(sigFreqStrength, -120, 0);
+  let normSigStrength = normalize(sigFreqStrength, -100, 0);
 
   if (normSigStrength >= 0.5) {
     if (hasBeenRead) return;
     // 1s
     let oneFreqIndex = getFrequencyIndexRange(oneFreq, freqBound);
     let oneFreqStrength = Math.max(...arr.slice(oneFreqIndex.min, oneFreqIndex.max));
-    let normOneStrength = normalize(oneFreqStrength, -120, 0);
+    let normOneStrength = normalize(oneFreqStrength, -100, 0);
 
     // 0s
     let zeroFreqIndex = getFrequencyIndexRange(zeroFreq, freqBound);
     let zeroFreqStrength = Math.max(...arr.slice(zeroFreqIndex.min, zeroFreqIndex.max));
-    let normZeroStrength = normalize(zeroFreqStrength, -120, 0);
+    let normZeroStrength = normalize(zeroFreqStrength, -100, 0);
 
     console.log(normOneStrength, normZeroStrength)
-    if (normOneStrength >= normZeroStrength) {
+    if (normOneStrength >= 0.5) {
       appendBit(1);
     } else {
       appendBit(0);
