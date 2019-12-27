@@ -1,14 +1,12 @@
-const oneFreq = 15000.0;
-const zeroFreq = 12000.0;
-const newBitFreq = 10000.0;
+const oneFreq = 19000.0;
+const zeroFreq = 15000.0;
+const newBitFreq = 17000.0;
 
 const freqBound = 10;
 
 var context = new AudioContext();
-let data = JSON.stringify({
-  msg: "hello"
-});
-const pulseWidth = 6000 / context.sampleRate;
+let data = "hello";
+const pulseWidth = 25000 / context.sampleRate;
 const fftSize = 2048;
 let analyserNode;
 let micStream;
@@ -21,8 +19,8 @@ let actualData = document.querySelector("#actualData");
 
 window.onload = async function () {
   navigator.getUserMedia({
-      audio: true
-    },
+    audio: true
+  },
     function (stream) {
       micStream = stream;
     },
@@ -159,7 +157,7 @@ function processAudio() {
     let normZeroStrength = normalize(zeroFreqStrength, -100, 0);
 
     console.log(normOneStrength, normZeroStrength)
-    if (normOneStrength >= 0.5) {
+    if (normOneStrength >= normZeroStrength) {
       appendBit(1);
     } else {
       appendBit(0);
